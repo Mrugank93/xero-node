@@ -1,0 +1,13 @@
+export * from './accountingApi';
+export * from './assetApi';
+export * from './projectApi';
+export * from './payrollAUApi';
+export * from './payrollNZApi';
+export * from './bankfeedsApi';
+import { AccountingApi } from './accountingApi';
+import { AssetApi } from './assetApi';
+import { ProjectApi } from './projectApi';
+import { PayrollAUApi } from './payrollAUApi';
+import { PayrollNZApi } from './payrollNZApi';
+import { BankFeedsApi } from './bankfeedsApi';
+export declare const APIS: (typeof AccountingApi | typeof AssetApi | typeof ProjectApi | typeof PayrollAUApi | typeof PayrollNZApi | typeof BankFeedsApi)[];
