@@ -51,9 +51,9 @@ export class XeroClient {
     this.accountingApi = new xero.AccountingApi();
     this.assetApi = new xero.AssetApi();
     this.projectApi = new xero.ProjectApi();
-    this.payrollAUApi = new xero.PayrollAUApi();
-    this.payrollNZApi = new xero.PayrollNZApi();
+    this.payrollAUApi = new xero.PayrollAuApi();
     this.bankFeedsApi = new xero.BankFeedsApi();
+    this.payrollUKApi = new xero.PayrollUkApi();
   }
 
   private tokenSet: TokenSet = new TokenSet
@@ -62,9 +62,10 @@ export class XeroClient {
   readonly accountingApi: xero.AccountingApi;
   readonly assetApi: xero.AssetApi;
   readonly projectApi: xero.ProjectApi;
-  readonly payrollAUApi: xero.PayrollAUApi;
+  readonly payrollAUApi: xero.PayrollAuApi;
   readonly payrollNZApi: xero.PayrollNZApi;
   readonly bankFeedsApi: xero.BankFeedsApi;
+  readonly payrollUKApi: xero.PayrollUkApi;
 
   openIdClient: any; // from openid-client
 
@@ -91,7 +92,8 @@ export class XeroClient {
     if (this.config) {
       url = this.openIdClient.authorizationUrl({
         redirect_uri: this.config.redirectUris[0],
-        scope: this.config.scopes.join(' ') || 'openid email profile'
+        scope: this.config.scopes.join(' ') || 'openid email profile',
+        state: this.config.state
       });
     }
     return url;
@@ -100,7 +102,11 @@ export class XeroClient {
   async apiCallback(callbackUrl: string): Promise<TokenSet> {
     const params = this.openIdClient.callbackParams(callbackUrl)
     const check = { ...params }
-    this.tokenSet = await this.openIdClient.callback(this.config.redirectUris[0], params, check);
+    if (this.config.scopes.includes('openid')) {
+      this.tokenSet = await this.openIdClient.callback(this.config.redirectUris[0], params, check);
+    } else {
+      this.tokenSet = await this.openIdClient.oauthCallback(this.config.redirectUris[0], params, check);
+    }
     this.setAccessToken();
     return this.tokenSet
   }
@@ -144,7 +150,7 @@ export class XeroClient {
     return formBody.join("&");
   }
 
-  formatMsDate(dateString: string){
+  formatMsDate(dateString: string) {
     const epoch = Date.parse(dateString)
     return "/Date(" + epoch + "+0000)/"
   }
@@ -240,5 +246,6 @@ export class XeroClient {
     this.payrollAUApi.accessToken = accessToken;
     this.payrollNZApi.accessToken = accessToken;
     this.bankFeedsApi.accessToken = accessToken;
+    this.payrollUKApi.accessToken = accessToken;
   }
 }
