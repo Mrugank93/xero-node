@@ -851,14 +851,16 @@ ul.nav-tabs {
     "purchasePrice" : {
       "type" : "number",
       "description" : "The purchase price of the asset",
-      "format" : "float",
-      "example" : 1000.0000
+      "format" : "double",
+      "example" : 1000.0000,
+      "x-is-money" : true
     },
     "disposalPrice" : {
       "type" : "number",
       "description" : "The price the asset was disposed at",
-      "format" : "float",
-      "example" : 1.0000
+      "format" : "double",
+      "example" : 1.0000,
+      "x-is-money" : true
     },
     "assetStatus" : {
       "$ref" : "#/components/schemas/AssetStatus"
@@ -887,8 +889,9 @@ ul.nav-tabs {
     "accountingBookValue" : {
       "type" : "number",
       "description" : "The accounting value of the asset",
-      "format" : "float",
-      "example" : 0
+      "format" : "double",
+      "example" : 0,
+      "x-is-money" : true
     },
     "isDeleteEnabledForDate" : {
       "type" : "boolean",
@@ -914,7 +917,7 @@ ul.nav-tabs {
 };
     defs["AssetType"] = {
   "title" : "",
-  "required" : [ "assetTypeId", "assetTypeName", "bookDepreciationSetting" ],
+  "required" : [ "assetTypeName", "bookDepreciationSetting" ],
   "type" : "object",
   "properties" : {
     "assetTypeId" : {
@@ -980,14 +983,16 @@ ul.nav-tabs {
     "currentCapitalGain" : {
       "type" : "number",
       "description" : "When an asset is disposed, this will be the sell price minus the purchase price if a profit was made.",
-      "format" : "float",
-      "example" : 5.25
+      "format" : "double",
+      "example" : 5.25,
+      "x-is-money" : true
     },
     "currentGainLoss" : {
       "type" : "number",
       "description" : "When an asset is disposed, this will be the lowest one of sell price or purchase price, minus the current book value.",
-      "format" : "float",
-      "example" : 10.5
+      "format" : "double",
+      "example" : 10.5,
+      "x-is-money" : true
     },
     "depreciationStartDate" : {
       "type" : "string",
@@ -997,26 +1002,30 @@ ul.nav-tabs {
     "costLimit" : {
       "type" : "number",
       "description" : "The value of the asset you want to depreciate, if this is less than the cost of the asset.",
-      "format" : "float",
-      "example" : 9000.0
+      "format" : "double",
+      "example" : 9000.0,
+      "x-is-money" : true
     },
     "residualValue" : {
       "type" : "number",
       "description" : "The value of the asset remaining when you've fully depreciated it.",
-      "format" : "float",
-      "example" : 10000.0
+      "format" : "double",
+      "example" : 10000.0,
+      "x-is-money" : true
     },
     "priorAccumDepreciationAmount" : {
       "type" : "number",
       "description" : "All depreciation prior to the current financial year.",
-      "format" : "float",
-      "example" : 0.45
+      "format" : "double",
+      "example" : 0.45,
+      "x-is-money" : true
     },
     "currentAccumDepreciationAmount" : {
       "type" : "number",
       "description" : "All depreciation occurring in the current financial year.",
-      "format" : "float",
-      "example" : 5.0
+      "format" : "double",
+      "example" : 5.0,
+      "x-is-money" : true
     }
   },
   "description" : ""
@@ -1040,8 +1049,9 @@ ul.nav-tabs {
     "depreciationRate" : {
       "type" : "number",
       "description" : "The rate of depreciation (e.g. 0.05)",
-      "format" : "float",
-      "example" : 0.05
+      "format" : "double",
+      "example" : 0.05,
+      "x-is-money" : true
     },
     "effectiveLifeYears" : {
       "type" : "integer",
@@ -1299,11 +1309,7 @@ ul.nav-tabs {
             <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
               <div class="app-desc">Version: 1.0.0</div>
             <!--
-<<<<<<< HEAD
-              <div class="app-desc">Version: 2.1.3</div>
-=======
-              <div class="app-desc">Version: 2.1.2</div>
->>>>>>> master
+              <div class="app-desc">Version: 2.2.10</div>
             <hr>
             <div id="app-description" class="app-desc">
                 This is the Xero Assets API
@@ -1662,7 +1668,18 @@ Fixed asset you are creating
 <!--p class="marked">Fixed asset you are creating</p-->
 <script>
 $(document).ready(function() {
-  var schemaWrapper = {} ;
+  var schemaWrapper = {} {
+  "description" : "Fixed asset you are creating",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/Asset"
+      },
+      "example" : "{ \"assetName\":\"Computer74863\", \"assetNumber\":\"123477544\", \"purchaseDate\":\"2020-01-01\", \"purchasePrice\":100.0, \"disposalPrice\":23.23, \"assetStatus\":\"Draft\", \"bookDepreciationSetting\":{ \"depreciationMethod\":\"StraightLine\", \"averagingMethod\":\"ActualDays\", \"depreciationRate\":0.5, \"depreciationCalculationMethod\":\"None\" }, \"bookDepreciationDetail\":{ \"currentCapitalGain\":5.32, \"currentGainLoss\":3.88, \"depreciationStartDate\":\"2020-01-02\", \"costLimit\":100.0, \"currentAccumDepreciationAmount\":2.25 }, \"AccountingBookValue\":99.5 }"
+    }
+  },
+  "required" : true
+} {} ;
   var schema = schemaWrapper.schema;
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);
@@ -2132,7 +2149,17 @@ Asset type to add
 <!--p class="marked">Asset type to add</p-->
 <script>
 $(document).ready(function() {
-  var schemaWrapper = {} ;
+  var schemaWrapper = {} {
+  "description" : "Asset type to add",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/AssetType"
+      },
+      "example" : "{ \"assetTypeName\":\"Machinery11004\", \"fixedAssetAccountId\":\"3d8d063a-c148-4bb8-8b3c-a5e2ad3b1e82\", \"depreciationExpenseAccountId\":\"d1602f69-f900-4616-8d34-90af393fa368\", \"accumulatedDepreciationAccountId\":\"9195cadd-8645-41e6-9f67-7bcd421defe8\", \"bookDepreciationSetting\":{ \"depreciationMethod\":\"DiminishingValue100\", \"averagingMethod\":\"ActualDays\", \"depreciationRate\":0.05, \"depreciationCalculationMethod\":\"None\" } }"
+    }
+  }
+} {} ;
   var schema = schemaWrapper.schema;
   if (schema.$ref != null) {
     schema = defsParser.$refs.get(schema.$ref);

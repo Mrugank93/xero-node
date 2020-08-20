@@ -8,6 +8,7 @@ Version 4.x of Xero NodeJS SDK only supports oAuth2 authentication and the follo
 * [projects](https://developer.xero.com/documentation/projects/overview-projects)
 * [AU Payroll](https://developer.xero.com/documentation/payroll-api/overview)
 * [BankFeeds (Restricted API)](https://developer.xero.com/documentation/bank-feeds-api/overview)
+* [UK Payroll](https://developer.xero.com/documentation/payroll-api-uk/overview)
 
 ## Looking for OAuth 1.0a support?
 [![npm package](https://img.shields.io/badge/npm%20package-3.1.2-blue.svg)](https://www.npmjs.com/package/xero-node/v/3.1.2)
@@ -54,7 +55,7 @@ In Xero a user can belong to multiple organisations. Tokens are ultimately assoc
 
 **Step 2:** Call `apiCallback` to get your tokenSet
 
-**Step 3:** Call `updateTenats` to populate additional tenant data
+**Step 3:** Call `updateTenants` to populate additional tenant data
 *You will need to have the `accounting.settings` scope in order to use this helper*
 
 **NOTE:** If you have already authorized the user and have stored a valid tokenSet, you can create a `new XeroClient()` and refresh your token without triggering the openid-client dependency:
@@ -200,6 +201,7 @@ await xero.accountingApi.getInvoices(xero.tenants[0].tenantId)
 * Assets API documentation: https://xeroapi.github.io/xero-node/v4/assets/index.html
 * AU Payroll API documentation: https://xeroapi.github.io/xero-node/v4/payroll-au/index.html
 * Bankfeeds API documentation: https://xeroapi.github.io/xero-node/v4/bankfeeds/index.html
+* UK Payroll API documentation: https://xeroapi.github.io/xero-node/v4/payroll-uk/index.html
 
 
 ### Basics
@@ -272,20 +274,25 @@ await xero.initialize()
 // buildConsentUrl calls `await xero.initialize()` so if you wont't need to call initialize() if your using the client to send user through the auth flow.
 await xero.buildConsentUrl()
 
+// tokenSet and its expiration
 const tokenSet = await xero.readTokenSet();
+const now = new Date().getTime()
 
-if (tokenSet.expired()) {
-  // refresh etc.
+if (tokenSet.expires_in > now) {
+  const validTokenSet = await xero.refreshToken()
+  // or you can refresh the token without needing to initialize the openid-client
+  // helpful for background processes where you want to limit any dependencies
+  await xero.refreshWithRefreshToken(client_id, client_secret, tokenSet.refresh_token)
 }
+
+tokenSet.expires_in // returns seconds
+tokenSet.expires_at // returns milliseconds
+new Date(tokenSet.expires_at * 1000).toLocaleString()) // readable expiration
 
 // some endpoints date fields require
 // the MS date format for POST'ing data
 const dateString = "1990-02-05"
 const birthday = await xero.formatMsDate(dateString)
-
-const validTokenSet = await xero.refreshToken()
-
-await xero.refreshWithRefreshToken(client_id, client_secret, tokenSet.refresh_token)
 
 await xero.disconnect(xero.tenants[0].id)
 
